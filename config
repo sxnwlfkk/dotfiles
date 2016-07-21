@@ -1,0 +1,8 @@
+# User config for dotfiles
+
+~,home
+.vimrc
+%%
+~/bin,scripts
+gitmerge
+%%
