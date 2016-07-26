@@ -19,7 +19,7 @@ backup-folders:
             - gitmerge
             - github-push
     home:
-        target: ~/
+        target: ~
         public:
             - .vimrc
             - .tmux.conf

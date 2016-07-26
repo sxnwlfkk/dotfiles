@@ -44,16 +44,14 @@ def main():
     cnf = read_dotfile(args.dotfile)
     args = parse_dot_args(args, cnf['settings'])
 
-    for section in cnf:
-        print(section)
-        print(cnf[section])
-
 
 #############
 # Functions #
 #############
 
 
+# Argparsing
+#
 def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
@@ -66,6 +64,7 @@ def parse_cl_args():
     args = parser.parse_args()
     return args
 
+
 # TODO How to add to args?
 def parse_dot_args(args, settings):
     if settings != None:
@@ -74,6 +73,8 @@ def parse_dot_args(args, settings):
         pass
 
 
+# Loading and reading dotfiles
+#
 def read_dotfile(path):
     "Decides if there is a custom dotfile or use default."
     if path == None:
@@ -90,6 +91,8 @@ def load_dotfile(path):
             return yaml.load(ymlfile)
     except:
         print("No dotfiles specified, or ~/{0} not present".format(DEF_DOTFILE))
+
+
 
 if __name__ == '__main__':
     main()
