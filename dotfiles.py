@@ -3,6 +3,7 @@
 import argparse
 import subprocess
 import os
+import yaml
 
 # Main features
 # - Read from config file (~/.dotfiles)
@@ -24,34 +25,45 @@ import os
 # - Section for main config files (.zshrc, .vimrc, oh-my-zsh.sh, etc.)
 
 
+descript = """
+Makes symlinks to working directories and public git directories as specified 
+in ~/.dotfile.
+"""
+
 def main():
 
-    parser = argparse.ArgumentParser(
-        description='Saves or restores dotfiles from dropbox and git.')
+    home_dir = os.path.expanduser('~')
 
-    group = parser.add_mutually_exclusive_group()
+    args = parse_them_args()
+    cnf = read_dotfile(args.dotfile)
 
-    group.add_argument('-s', '--save',
-                        action='store_true', default=False,
-                        help='Saves the current dotfiles to the backup directory.')
-
-    group.add_argument('-r', '--restore',
-                       action='store_true', default=False,
-                       help='Restores the dotfiles form the backup directory.')
-    load_owndot()
+    for section in cnf:
+        print(section)
+        print(cnf[section])
 
 
-def load_owndot():
-    path = os.path.realpath(__file__)[: - len(__file__)] + '.dotfiles'
-    if os.path.exists(path):
-        owndot = open(path, 'r+')
-    else:
-        owndot = open(path, 'w+')
-    return owndot
+def read_dotfile(path):
+    if path == None:
+        dot_path = home_dir + '/.dotfile'
+        return load_dotfile(dot_path)
+
+    return load_dotfile(path)
 
 
-def close_owndot(file_obj):
-    file_obj.close()
+def load_dotfile(path):
+    with open(path, 'r') as ymlfile:
+        return yaml.load(ymlfile)
+
+
+def parse_them_args():
+    "Parses the provided args with argparse."
+
+    parser = argparse.ArgumentParser(description=descript)
+    parser.add_argument('-d', '--dotfile',
+                        help='Define alternative dotfile for this run')
+
+    args = parser.parse_args()
+    return args
 
 
 if __name__ == '__main__':
