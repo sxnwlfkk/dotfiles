@@ -5,6 +5,19 @@ import subprocess
 import os
 import yaml
 
+
+# Constants
+
+DEF_DOTFILE = '.dotfile'
+
+# Description and misc docstrings:
+
+DESCRIPT = """
+Makes symlinks to working directories and public git directories as specified 
+in ~/.dotfile.
+"""
+
+
 # Main features
 # - Read from config file (~/.dotfiles)
 #   - Specify another dotfile to use (one use)
@@ -25,46 +38,58 @@ import yaml
 # - Section for main config files (.zshrc, .vimrc, oh-my-zsh.sh, etc.)
 
 
-descript = """
-Makes symlinks to working directories and public git directories as specified 
-in ~/.dotfile.
-"""
-
 def main():
 
-    home_dir = os.path.expanduser('~')
-
-    args = parse_them_args()
+    args = parse_cl_args()
     cnf = read_dotfile(args.dotfile)
+    args = parse_dot_args(args, cnf['settings'])
 
     for section in cnf:
         print(section)
         print(cnf[section])
 
 
+#############
+# Functions #
+#############
+
+
+def def_args():
+    parser = argparse.ArgumentParser(description=DESCRIPT)
+    parser.add_argument('-d', '--dotfile',
+                        help='Define alternative dotfile for this run')
+    return parser
+
+
+def parse_cl_args():
+    parser = def_args()
+    args = parser.parse_args()
+    return args
+
+# TODO How to add to args?
+def parse_dot_args(args, settings):
+    if settings != None:
+        pass
+    else:
+        pass
+
+
 def read_dotfile(path):
+    "Decides if there is a custom dotfile or use default."
     if path == None:
-        dot_path = home_dir + '/.dotfile'
+        dot_path = os.path.expanduser('~') + DEF_DOTFILE
         return load_dotfile(dot_path)
 
     return load_dotfile(path)
 
 
 def load_dotfile(path):
-    with open(path, 'r') as ymlfile:
-        return yaml.load(ymlfile)
-
-
-def parse_them_args():
-    "Parses the provided args with argparse."
-
-    parser = argparse.ArgumentParser(description=descript)
-    parser.add_argument('-d', '--dotfile',
-                        help='Define alternative dotfile for this run')
-
-    args = parser.parse_args()
-    return args
-
+    "Loads given dotfile, with `with`."
+    try:
+        with open(path, 'r') as ymlfile:
+            return yaml.load(ymlfile)
+    except:
+        print("No dotfiles specified, or ~/{0} not present".format(DEF_DOTFILE))
 
 if __name__ == '__main__':
     main()

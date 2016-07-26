@@ -1,0 +1,34 @@
+# User config for dotfiles.py and gitsync.py in YAML
+
+settings:
+    # various config flags like, don't sync public repo
+
+repositories:
+    private:
+        dir: /home/cs/Dropbox/config-backups
+        url: git@bitbucket.org:sxnwlfkk/configs.git
+    public:
+        dir: /home/cs/src/github
+        url: https://github.com/sxnwlfkk/configs.git
+
+backup-folders:
+    scripts:
+        target: ~/bin
+        public:
+            - sscript
+            - gitmerge
+            - github-push
+    home:
+        target: ~/
+        public:
+            - .vimrc
+            - .tmux.conf
+        private:
+            - .zshrc
+            - .spacemacs
+            - .netrc
+            - [rc.conf, ~/.config/ranger/rc.conf]
+    themes:
+        konsole:
+            - [konsole-solarized-custom.colorscheme,
+               ~/.local/share/konsole/Solarized-Dark.colorscheme]        
