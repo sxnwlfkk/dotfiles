@@ -54,13 +54,15 @@ def main():
 
 # Argparsing
 #
+
+# TODO Might be prudent, if neccessary to make separate argparser for the CLI
+# and the run-command file
 def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
                         help='Define alternative dotfile for this run')
     parser.add_argument('--private', '-P', action='store_true',
                         help="Don't make public folder")
-
     return parser
 
 
@@ -75,8 +77,20 @@ def parse_dot_args(old_args, settings):
         pass
     else:
         parser = def_args()
-        new_args = parser.parse_args(args=['--verbose'], namespace=old_args)
+        read_args = build_args_str(settings)
+        new_args = parser.parse_args(args=[read_args], namespace=old_args)
         return new_args
+
+
+def build_args_str(settings_dict):
+    arg_str = ''
+    for key, value in settings_dict.items():
+        if value == "True" or value != "False" and value != '':
+            arg_str += '--' + key
+
+    return arg_str
+
+
 
 
 # Loading and reading dotfiles

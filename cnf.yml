@@ -1,8 +1,8 @@
 # User config for dotfiles.py and gitsync.py in YAML
 
 settings:
-    # various config flags like, don't sync public repo
-    verbose: yes
+    # Make just make private repo
+    private: True
 
 repositories:
     private:
