@@ -45,6 +45,8 @@ def main():
     args = parse_dot_args(args, cnf['settings'])
 
 
+    print(args)
+
 #############
 # Functions #
 #############
@@ -56,6 +58,9 @@ def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
                         help='Define alternative dotfile for this run')
+    parser.add_argument('--private', '-P', action='store_true',
+                        help="Don't make public folder")
+
     return parser
 
 
@@ -65,12 +70,13 @@ def parse_cl_args():
     return args
 
 
-# TODO How to add to args?
-def parse_dot_args(args, settings):
-    if settings != None:
+def parse_dot_args(old_args, settings):
+    if settings == None:
         pass
     else:
-        pass
+        parser = def_args()
+        new_args = parser.parse_args(args=['--verbose'], namespace=old_args)
+        return new_args
 
 
 # Loading and reading dotfiles

@@ -2,6 +2,7 @@
 
 settings:
     # various config flags like, don't sync public repo
+    verbose: yes
 
 repositories:
     private:
