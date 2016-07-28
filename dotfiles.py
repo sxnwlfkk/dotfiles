@@ -43,9 +43,9 @@ def main():
     args = parse_cl_args()
     cnf = read_dotfile(args.dotfile)
     args = parse_dot_args(args, cnf['settings'])
+    make_symlinks(cnf['backup_folders'], args)
 
 
-    print(args)
 
 #############
 # Functions #
@@ -53,7 +53,7 @@ def main():
 
 
 # Argparsing
-#
+
 
 # TODO Might be prudent, if neccessary to make separate argparser for the CLI
 # and the run-command file
@@ -91,8 +91,6 @@ def build_args_str(settings_dict):
     return arg_str
 
 
-
-
 # Loading and reading dotfiles
 #
 def read_dotfile(path):
@@ -111,6 +109,19 @@ def load_dotfile(path):
             return yaml.load(ymlfile)
     except:
         print("No dotfiles specified, or ~/{0} not present".format(DEF_DOTFILE))
+
+
+# Symlinking
+#
+
+
+
+
+def call_command(command):
+    process = subprocess.Popen(command.split(' '),
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
+    return process.communicate()
 
 
 
