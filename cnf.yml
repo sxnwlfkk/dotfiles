@@ -2,14 +2,14 @@
 
 settings:
     # Make just make private repo
-    private: True
+    # private: False
 
 repositories:
     private:
-        dir: /home/cs/Dropbox/config-backups
+        dir: /home/cs/Dropbox/config-backups/
         url: git@bitbucket.org:sxnwlfkk/configs.git
     public:
-        dir: /home/cs/src/github
+        dir: /home/cs/src/github/
         url: https://github.com/sxnwlfkk/configs.git
 
 backup-folders:

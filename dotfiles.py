@@ -61,7 +61,8 @@ def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
                         help='Define alternative dotfile for this run')
-    parser.add_argument('--private', '-P', action='store_true',
+    parser.add_argument('--private', '-p', action='store_true',
+                        default=False,
                         help="Don't make public folder")
     return parser
 
@@ -85,8 +86,9 @@ def parse_dot_args(old_args, settings):
 def build_args_str(settings_dict):
     arg_str = ''
     for key, value in settings_dict.items():
-        if value == "True" or value != "False" and value != '':
+        if key == 'private' and (value == "True" or value != "False" and value != ''):
             arg_str += '--' + key
+# TODO
 
     return arg_str
 
@@ -114,9 +116,11 @@ def load_dotfile(path):
 # Symlinking
 #
 def make_symlinks(backup_folders, repositories, args):
-    make_private_symlinks(backup_folders, repositories)
+    #make_private_symlinks(backup_folders, repositories)
+    print(args.private)
     if args.private != True:
-        make_public_symlinks()
+        print('megy')
+        make_public_symlinks(backup_folders, repositories)
 
 
 def make_private_symlinks(backup_folders, repositories):
@@ -146,7 +150,26 @@ def make_private_symlinks(backup_folders, repositories):
             for dotfile in st_dir:
                 from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile)
                 make_symlink(from_file, to_file)
-                print('{0} is symlinked to {1}'.format(dotfile, to_file))
+                # print('{0} is symlinked to {1}'.format(dotfile, to_file))
+
+
+def make_public_symlinks(backup_folders, repositories):
+
+    for foldername, folder in backup_folders.items():
+        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername 
+                             + '/')
+        print(from_dir)
+        target_public = repositories['public']['dir']
+        if 'target' in backup_folders[foldername]:
+            target_public += strip_unneeded(backup_folders[foldername]['target'])
+        print(target_public)
+
+
+def strip_unneeded(filename):
+    if filename[0] == '~':
+        filename = filename[1:]
+    if filename[0] == '/':
+        return filename[1:]
 
 
 def generate_target_filenames(from_dir, to_dir, dotfile):
@@ -173,10 +196,8 @@ def expand_user(path):
 
 
 def check_dir(path):
-    print('1', path)
     path = expand_user(path)
     path = os.path.dirname(path)
-    print('2', path)
     if os.path.exists(path):
         return path
     raise NameError("No such path exists: {0} Check config and try again.".format(path))
@@ -188,9 +209,7 @@ def ensure_dir(path):
         return value
     except NameError:
         path = expand_user(path)
-        print('ensure 1: ', path)
         os.makedirs(path)
-        print('made dirs for: ', path)
         return path
 
 
