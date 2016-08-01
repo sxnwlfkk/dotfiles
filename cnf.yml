@@ -14,16 +14,17 @@ repositories:
 
 backup-folders:
     scripts:
-        target: ~/bin
+        target: ~/dummy/bin/
         public:
             - sscript
-            - gitmerge
+            - gitmerge.py
             - github-push
     home:
-        target: ~
+        target: ~/dummy/
         public:
             - .vimrc
             - .tmux.conf
+            - [.newsbeuterrc, ~/.newsbeuter/config]
         private:
             - .zshrc
             - .spacemacs

@@ -1,7 +1,8 @@
-#!/bin/python
+
 
 import argparse
 import subprocess
+import shlex
 import os
 import yaml
 
@@ -43,8 +44,7 @@ def main():
     args = parse_cl_args()
     cnf = read_dotfile(args.dotfile)
     args = parse_dot_args(args, cnf['settings'])
-    make_symlinks(cnf['backup_folders'], args)
-
+    make_symlinks(cnf['backup-folders'], cnf['repositories'], args)
 
 
 #############
@@ -113,16 +113,93 @@ def load_dotfile(path):
 
 # Symlinking
 #
+def make_symlinks(backup_folders, repositories, args):
+    make_private_symlinks(backup_folders, repositories)
+    if args.private != True:
+        make_public_symlinks()
 
 
+def make_private_symlinks(backup_folders, repositories):
+
+    for foldername, folder in backup_folders.items():
+
+        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername
+                            + '/')
+        # Debug
+        #print("The state of from_dir: ", from_dir)
+
+        if 'target' not in backup_folders[foldername]:
+            backup_folders[foldername]['target'] = '~/'
+
+        # Debug
+        #print("The state of backup_folders[foldername]['target']: ",
+        #      backup_folders[foldername]['target'])
+
+        to_dir = ensure_dir(backup_folders[foldername]['target'])
+
+        # Debug
+        #print("The state of to_dir: ", to_dir)
+
+        for status, st_dir in folder.items():
+            if status == 'target':
+                continue
+            for dotfile in st_dir:
+                from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile)
+                make_symlink(from_file, to_file)
+                print('{0} is symlinked to {1}'.format(dotfile, to_file))
+
+
+def generate_target_filenames(from_dir, to_dir, dotfile):
+    try:
+        assert isinstance(dotfile, str)
+        from_file = from_dir + '/' + dotfile
+        to_file = to_dir + '/' + dotfile
+        return from_file, to_file
+
+    except AssertionError:
+        if len(dotfile) == 2:
+            from_file = from_dir + '/' + dotfile[0]
+            to_file = ensure_dir(dotfile[1]) + '/' + os.path.basename(dotfile[1])
+            return from_file, to_file
+
+
+def make_symlink(from_file, to_file):
+    call_command('ln -sf {0} {1}'.format(from_file, to_file))
+
+def expand_user(path):
+    if path[0] == '~':
+        path = os.path.expanduser('~') + path[1:]
+    return path
+
+
+def check_dir(path):
+    print('1', path)
+    path = expand_user(path)
+    path = os.path.dirname(path)
+    print('2', path)
+    if os.path.exists(path):
+        return path
+    raise NameError("No such path exists: {0} Check config and try again.".format(path))
+
+
+def ensure_dir(path):
+    try:
+        value = check_dir(path)
+        return value
+    except NameError:
+        path = expand_user(path)
+        print('ensure 1: ', path)
+        os.makedirs(path)
+        print('made dirs for: ', path)
+        return path
 
 
 def call_command(command):
-    process = subprocess.Popen(command.split(' '),
+    process = subprocess.Popen(shlex.split(command),
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+                               stderr=subprocess.PIPE,
+                               universal_newlines=False,)
     return process.communicate()
-
 
 
 if __name__ == '__main__':
