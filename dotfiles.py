@@ -42,6 +42,7 @@ in ~/.dotfile.
 def main():
 
     args = parse_cl_args()
+    print(args.dotfile)
     cnf = read_dotfile(args.dotfile)
     args = parse_dot_args(args, cnf['settings'])
     # If there is a public repo, pull it to the public dir
@@ -98,11 +99,11 @@ def build_args_str(settings_dict):
 #
 def read_dotfile(path):
     "Decides if there is a custom dotfile or use default."
-    if path == None:
-        dot_path = os.path.expanduser('~') + DEF_DOTFILE
-        return load_dotfile(dot_path)
+    if path:
+        return load_dotfile(path)
 
-    return load_dotfile(path)
+    dot_path = check_slashes(os.path.expanduser('~') + '/' + DEF_DOTFILE)
+    return load_dotfile(dot_path)
 
 
 def load_dotfile(path):
