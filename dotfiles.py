@@ -61,9 +61,8 @@ def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
                         help='Define alternative dotfile for this run')
-    parser.add_argument('--private', '-p', action='store_true',
-                        default=False,
-                        help="Don't make public folder")
+    parser.add_argument('--private', '-p', choices=['True', 'False'],
+                        help="Don't make public folder, takes True of False")
     return parser
 
 
@@ -78,17 +77,15 @@ def parse_dot_args(old_args, settings):
         pass
     else:
         parser = def_args()
-        read_args = build_args_str(settings)
-        new_args = parser.parse_args(args=[read_args], namespace=old_args)
+        read_args = build_args_str(settings).split()
+        new_args = parser.parse_args(args=read_args, namespace=old_args)
         return new_args
 
 
 def build_args_str(settings_dict):
     arg_str = ''
     for key, value in settings_dict.items():
-        if key == 'private' and (value == "True" or value != "False" and value != ''):
-            arg_str += '--' + key
-# TODO
+        arg_str += '--' + key + ' ' +  str(value) + ' '
 
     return arg_str
 
@@ -119,7 +116,6 @@ def make_symlinks(backup_folders, repositories, args):
     #make_private_symlinks(backup_folders, repositories)
     print(args.private)
     if args.private != True:
-        print('megy')
         make_public_symlinks(backup_folders, repositories)
 
 
@@ -148,7 +144,7 @@ def make_private_symlinks(backup_folders, repositories):
             if status == 'target':
                 continue
             for dotfile in st_dir:
-                from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile)
+                from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile, 'private')
                 make_symlink(from_file, to_file)
                 # print('{0} is symlinked to {1}'.format(dotfile, to_file))
 
@@ -156,13 +152,19 @@ def make_private_symlinks(backup_folders, repositories):
 def make_public_symlinks(backup_folders, repositories):
 
     for foldername, folder in backup_folders.items():
-        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername 
-                             + '/')
-        print(from_dir)
-        target_public = repositories['public']['dir']
-        if 'target' in backup_folders[foldername]:
-            target_public += strip_unneeded(backup_folders[foldername]['target'])
+        from_dir = check_dir(repositories['private']['dir']) + '/' + foldername + '/'
+
+        target_public = check_slashes(repositories['public']['dir'] + '/' + foldername)
         print(target_public)
+
+        for status, st_dir in folder.items():
+            if status == 'target' or status == 'private':
+                continue
+            for dotfile in st_dir:
+                from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
+                ensure_dir(to_file)
+                make_symlink(from_file, to_file)
+                print('{0} is symlinked to {1}'.format(dotfile, to_file))
 
 
 def strip_unneeded(filename):
@@ -172,18 +174,35 @@ def strip_unneeded(filename):
         return filename[1:]
 
 
-def generate_target_filenames(from_dir, to_dir, dotfile):
+def generate_target_filenames(from_dir, to_dir, dotfile, status):
     try:
         assert isinstance(dotfile, str)
-        from_file = from_dir + '/' + dotfile
-        to_file = to_dir + '/' + dotfile
+        from_file = check_slashes(from_dir + '/' + dotfile)
+        to_file = check_slashes(to_dir + '/' + dotfile)
         return from_file, to_file
 
     except AssertionError:
-        if len(dotfile) == 2:
-            from_file = from_dir + '/' + dotfile[0]
-            to_file = ensure_dir(dotfile[1]) + '/' + os.path.basename(dotfile[1])
-            return from_file, to_file
+        if status == 'private':
+            if len(dotfile) == 2:
+                from_file = check_slashes(from_dir + '/' + dotfile[0])
+                to_file = ensure_dir(dotfile[1]) + '/' + os.path.basename(dotfile[1])
+                return from_file, to_file
+
+        if status == 'public':
+            if len(dotfile) == 2:
+                from_file = check_slashes(from_dir + '/' + dotfile[0])
+                to_file = check_slashes(to_dir + '/' + dotfile[0])
+                return from_file, to_file
+
+
+def check_slashes(filename):
+    for i in range(len(filename)):
+        if i+1 < len(filename):
+            if filename[i] == '/' and filename[i+1] == '/':
+                filename = filename[:i] + filename[i+1:]
+                check_slashes(filename)
+
+    return filename
 
 
 def make_symlink(from_file, to_file):
@@ -209,6 +228,7 @@ def ensure_dir(path):
         return value
     except NameError:
         path = expand_user(path)
+        path = os.path.dirname(path)
         os.makedirs(path)
         return path
 
