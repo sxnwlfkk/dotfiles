@@ -44,7 +44,11 @@ def main():
     args = parse_cl_args()
     cnf = read_dotfile(args.dotfile)
     args = parse_dot_args(args, cnf['settings'])
+    # If there is a public repo, pull it to the public dir
+    # if args.private == False:
+    #     github_sync()
     make_symlinks(cnf['backup-folders'], cnf['repositories'], args)
+    # If there is a public repo, sync it with the symlinks in it
 
 
 #############
@@ -113,9 +117,10 @@ def load_dotfile(path):
 # Symlinking
 #
 def make_symlinks(backup_folders, repositories, args):
-    #make_private_symlinks(backup_folders, repositories)
-    print(args.private)
+    print("\nMaking private symlinks:\n")
+    make_private_symlinks(backup_folders, repositories)
     if args.private != True:
+        print("\nMaking public symlinks:\n")
         make_public_symlinks(backup_folders, repositories)
 
 
@@ -125,20 +130,11 @@ def make_private_symlinks(backup_folders, repositories):
 
         from_dir = check_dir(repositories['private']['dir'] + '/' + foldername
                             + '/')
-        # Debug
-        #print("The state of from_dir: ", from_dir)
 
         if 'target' not in backup_folders[foldername]:
             backup_folders[foldername]['target'] = '~/'
 
-        # Debug
-        #print("The state of backup_folders[foldername]['target']: ",
-        #      backup_folders[foldername]['target'])
-
         to_dir = ensure_dir(backup_folders[foldername]['target'])
-
-        # Debug
-        #print("The state of to_dir: ", to_dir)
 
         for status, st_dir in folder.items():
             if status == 'target':
@@ -146,7 +142,7 @@ def make_private_symlinks(backup_folders, repositories):
             for dotfile in st_dir:
                 from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile, 'private')
                 make_symlink(from_file, to_file)
-                # print('{0} is symlinked to {1}'.format(dotfile, to_file))
+                print('{0} is symlinked to {1}\n'.format(dotfile, to_file))
 
 
 def make_public_symlinks(backup_folders, repositories):
@@ -155,7 +151,6 @@ def make_public_symlinks(backup_folders, repositories):
         from_dir = check_dir(repositories['private']['dir']) + '/' + foldername + '/'
 
         target_public = check_slashes(repositories['public']['dir'] + '/' + foldername)
-        print(target_public)
 
         for status, st_dir in folder.items():
             if status == 'target' or status == 'private':
@@ -164,7 +159,7 @@ def make_public_symlinks(backup_folders, repositories):
                 from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
                 ensure_dir(to_file)
                 make_symlink(from_file, to_file)
-                print('{0} is symlinked to {1}'.format(dotfile, to_file))
+                print('{0} is symlinked to {1}\n'.format(dotfile, to_file))
 
 
 def strip_unneeded(filename):
@@ -206,7 +201,9 @@ def check_slashes(filename):
 
 
 def make_symlink(from_file, to_file):
-    call_command('ln -sf {0} {1}'.format(from_file, to_file))
+    command = 'ln -sf {0} {1}'.format(from_file, to_file)
+    print(command)
+    call_command(command)
 
 def expand_user(path):
     if path[0] == '~':

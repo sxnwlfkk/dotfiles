@@ -14,19 +14,24 @@ repositories:
 
 backup-folders:
     scripts:
-        target: ~/dummy/bin/
+        target: ~/bin/
         public:
             - sscript
             - gitmerge.py
+        private:
             - github-push
     home:
-        target: ~/dummy/
+        target: ~/
         public:
             - .vimrc
             - .tmux.conf
             - [.newsbeuterrc, ~/.newsbeuter/config]
         private:
             - .zshrc
+            - .zsh_history
+            - .z # could cause problems
+            - .pinerc
+            - .addressbook
             - .spacemacs
             - .netrc
             - [rc.conf, ~/.config/ranger/rc.conf]
