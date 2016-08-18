@@ -80,7 +80,7 @@ def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
                         help='Define alternative dotfile for this run')
-    parser.add_argument('--private', '-p', choices=['True', 'False'], default='True',
+    parser.add_argument('--private', '-p', choices=['true', 'false'], default='true',
                         help="If True, then doesn't make public folders and symlinks. Defaults to True.")
     parser.add_argument('--verbose', '-v', action='count',
                         help='Increase output verbosity.')
@@ -137,7 +137,7 @@ def make_symlinks(backup_folders, repositories, args, log):
     log.info("Making private symlinks")
     make_private_symlinks(backup_folders, repositories, log)
     log.info('Private value: ' + args.private)
-    if args.private != 'True':
+    if args.private != 'true':
         log.info("Making public symlinks")
         make_public_symlinks(backup_folders, repositories, log)
 

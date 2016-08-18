@@ -2,3 +2,5 @@
 dotfiles.pyc
 cnf.yml
 dotfiles.log
+logs
+logs/*
