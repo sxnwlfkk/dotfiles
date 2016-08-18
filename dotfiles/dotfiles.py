@@ -176,7 +176,7 @@ def make_public_symlinks(backup_folders, repositories, log):
             for dotfile in st_dir:
                 from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
                 ensure_dir(to_file)
-                make_symlink(from_file, to_file)
+                make_symlink(from_file, to_file, log)
                 log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
 
