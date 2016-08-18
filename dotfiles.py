@@ -1,9 +1,10 @@
 
 
 import argparse
+import logging
+import os
 import subprocess
 import shlex
-import os
 import yaml
 
 
@@ -19,36 +20,49 @@ in ~/.dotfile.
 """
 
 
-# Main features
-# - Read from config file (~/.dotfiles)
-#   - Specify another dotfile to use (one use)
-# - Distinguish between public and private repos
-# - Make symlinks for usage and for public repo
+###########
+# Logging #
+###########
 
-# Git syncer
-# - Make a separate git syncer (maybe with inotify reminder)
-# - Separate syncing action for private and public repos
-# - Action to set up public repo (pull from github, then symlink with force
-#   from private dir
+def logr(args):
+    try:
+        import coloredlogs
+    except Error:
+        pass
 
-# Contents of config file (~/.dotfiles):
-# - Private repo url
-# - Public repo url
-# - Absolute path to private repository dir
-# - All sections have two parts a general, and a private
-# - Section for main config files (.zshrc, .vimrc, oh-my-zsh.sh, etc.)
+    if args.verbose == None:
+        coloredlogs.install(level='ERROR')
+    elif args.verbose == 1:
+        coloredlogs.install(level='INFO')
+    elif args.verbose >= 2:
+        coloredlogs.install(level='DEBUG')
 
+    logging.basicConfig(level=logging.ERROR)
+    log = logging.getLogger('dotfiles')
+    log_path = os.path.dirname(os.path.realpath(__file__)) + '/' + 'dotfiles.log'
+    fh = logging.FileHandler(log_path)
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+
+    log.addHandler(fh)
+    return log
+
+########
+# Main #
+########
 
 def main():
 
     args = parse_cl_args()
-    print(args.dotfile)
+    log = logr(args)
+    log.debug(args.dotfile)
     cnf = read_dotfile(args.dotfile)
     args = parse_dot_args(args, cnf['settings'])
     # If there is a public repo, pull it to the public dir
     # if args.private == False:
     #     github_sync()
-    make_symlinks(cnf['backup-folders'], cnf['repositories'], args)
+    make_symlinks(cnf['backup-folders'], cnf['repositories'], args, log)
     # If there is a public repo, sync it with the symlinks in it
 
 
@@ -66,8 +80,10 @@ def def_args():
     parser = argparse.ArgumentParser(description=DESCRIPT)
     parser.add_argument('-d', '--dotfile',
                         help='Define alternative dotfile for this run')
-    parser.add_argument('--private', '-p', choices=['True', 'False'],
-                        help="Don't make public folder, takes True of False")
+    parser.add_argument('--private', '-p', choices=['True', 'False'], default='True',
+                        help="If True, then doesn't make public folders and symlinks. Defaults to True.")
+    parser.add_argument('--verbose', '-v', action='count',
+                        help='Increase output verbosity.')
     return parser
 
 
@@ -79,7 +95,7 @@ def parse_cl_args():
 
 def parse_dot_args(old_args, settings):
     if settings == None:
-        pass
+        return old_args
     else:
         parser = def_args()
         read_args = build_args_str(settings).split()
@@ -112,20 +128,21 @@ def load_dotfile(path):
         with open(path, 'r') as ymlfile:
             return yaml.load(ymlfile)
     except:
-        print("No dotfiles specified, or ~/{0} not present".format(DEF_DOTFILE))
+        log.error("No dotfiles specified, or ~/{0} not present".format(DEF_DOTFILE))
 
 
 # Symlinking
 #
-def make_symlinks(backup_folders, repositories, args):
-    print("\nMaking private symlinks:\n")
-    make_private_symlinks(backup_folders, repositories)
-    if args.private != True:
-        print("\nMaking public symlinks:\n")
-        make_public_symlinks(backup_folders, repositories)
+def make_symlinks(backup_folders, repositories, args, log):
+    log.info("Making private symlinks")
+    make_private_symlinks(backup_folders, repositories, log)
+    log.info('Private value: ' + args.private)
+    if args.private != 'True':
+        log.info("Making public symlinks")
+        make_public_symlinks(backup_folders, repositories, log)
 
 
-def make_private_symlinks(backup_folders, repositories):
+def make_private_symlinks(backup_folders, repositories, log):
 
     for foldername, folder in backup_folders.items():
 
@@ -142,11 +159,11 @@ def make_private_symlinks(backup_folders, repositories):
                 continue
             for dotfile in st_dir:
                 from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile, 'private')
-                make_symlink(from_file, to_file)
-                print('{0} is symlinked to {1}\n'.format(dotfile, to_file))
+                make_symlink(from_file, to_file, log)
+                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
 
-def make_public_symlinks(backup_folders, repositories):
+def make_public_symlinks(backup_folders, repositories, log):
 
     for foldername, folder in backup_folders.items():
         from_dir = check_dir(repositories['private']['dir']) + '/' + foldername + '/'
@@ -160,7 +177,7 @@ def make_public_symlinks(backup_folders, repositories):
                 from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
                 ensure_dir(to_file)
                 make_symlink(from_file, to_file)
-                print('{0} is symlinked to {1}\n'.format(dotfile, to_file))
+                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
 
 def strip_unneeded(filename):
@@ -201,9 +218,9 @@ def check_slashes(filename):
     return filename
 
 
-def make_symlink(from_file, to_file):
+def make_symlink(from_file, to_file, log):
     command = 'ln -sf {0} {1}'.format(from_file, to_file)
-    print(command)
+    log.debug('Command called: ' + command)
     call_command(command)
 
 def expand_user(path):
@@ -217,7 +234,10 @@ def check_dir(path):
     path = os.path.dirname(path)
     if os.path.exists(path):
         return path
-    raise NameError("No such path exists: {0} Check config and try again.".format(path))
+    try:
+        raise NameError("No such path exists: {0} Check config and try again.".format(path))
+    except NameError as err:
+        log.exception('No such file: ', path)
 
 
 def ensure_dir(path):

@@ -1,2 +1,4 @@
 *.swp
 dotfiles.pyc
+cnf.yml
+dotfiles.log
