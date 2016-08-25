@@ -4,3 +4,5 @@ cnf.yml
 dotfiles.log
 logs
 logs/*
+.cache
+*.pyc
