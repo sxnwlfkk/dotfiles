@@ -1,9 +1,16 @@
 TODO
 
-* Project structure [0/2]
+* Info
+Because the way git behaves with links, I need to rethink the dotsync idea.
+I think, since I want to autamate the public git repository, but that don't needs to be perfectly up to date, I can get away with copying instead of symlinking.
+* Project structure [1/4]
+** TODO Separating mechanism and policy
+** DONE CLI argument should write over dotfile setup
+CLOSED: [2016-08-30 k 17:16]
+OR there should be no policy in the dotfile, only in CLI
+No policy in dotfile.
 ** TODO setup.py
 ** TODO Documentation
-
 * Dotfiles.py [0/2]
 ** TODO Write argparser for dotsync option
 ** TODO Change order of parsing args
@@ -11,12 +18,15 @@ TODO
 
 * Dotsync.py [0/2]
 ** TODO Program structure
-- [ ] Read from .dotfile
-- [ ] Decide what to do with passwords
+- [ ] Don't read from .dotfile, take arguments
+- [ ] Can it be a shellscript or should I use python?
+- [ ] Using Inotify?
+- [X] Decide what to do with passwords
   Probably the best thing, to provide an option to cache the password
   in the .dotfile, but that wouldn't be the default.
-- [ ] Would I need to use expect?
-- [ ] Using Inotify?
+  - No password cacheing
+- [X] Would I need to use expect?
+  No.
 
 
 ** TODO Functions

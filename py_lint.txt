@@ -1,0 +1,165 @@
+************* Module src.dotfiles.dotfiles
+C: 65, 0: Line too long (105/100) (line-too-long)
+C:  1, 0: Missing module docstring (missing-docstring)
+E:  8, 0: Unable to import 'dot_mechanism' (import-error)
+C: 27, 0: Missing function docstring (missing-docstring)
+E: 30,11: Undefined variable 'Error' (undefined-variable)
+C: 33, 7: Comparison to None should be 'expr is None' (singleton-comparison)
+C: 43, 4: Invalid variable name "fh" (invalid-name)
+C: 59, 0: Missing function docstring (missing-docstring)
+C: 71, 0: Missing function docstring (missing-docstring)
+C: 81, 0: Missing function docstring (missing-docstring)
+C: 90, 7: Comparison to True should be just 'expr' or 'expr is True' (singleton-comparison)
+W:  6, 0: Unused import subprocess (unused-import)
+W:  7, 0: Unused import shlex (unused-import)
+W:  8, 0: Unused check_slashes imported from dot_mechanism (unused-import)
+************* Module src.dotfiles.dot_mechanism
+C: 57, 0: Wrong continued indentation (add 1 space).
+                            + '/')
+                            ^| (bad-continuation)
+C: 84, 0: Line too long (106/100) (line-too-long)
+C:  1, 0: Missing module docstring (missing-docstring)
+W: 27,11: Catching too general exception Exception (broad-except)
+C: 27, 4: Invalid variable name "e" (invalid-name)
+C: 33, 0: Missing function docstring (missing-docstring)
+C: 43, 0: Missing function docstring (missing-docstring)
+E: 46,33: Undefined variable 'args' (undefined-variable)
+C: 52, 0: Missing function docstring (missing-docstring)
+C: 73, 0: Missing function docstring (missing-docstring)
+C: 90, 0: Missing function docstring (missing-docstring)
+C: 97, 0: Missing function docstring (missing-docstring)
+C:118, 0: Missing function docstring (missing-docstring)
+C:119, 4: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+C:128, 0: Missing function docstring (missing-docstring)
+C:134, 0: Missing function docstring (missing-docstring)
+C:140, 0: Missing function docstring (missing-docstring)
+E:148, 8: Undefined variable 'log' (undefined-variable)
+W:147, 4: Unused variable 'err' (unused-variable)
+C:151, 0: Missing function docstring (missing-docstring)
+
+
+Report
+======
+157 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |2      |1          |+1.00      |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|method   |0      |0          |=          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|function |17     |13         |+4.00      |11.76       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    coloredlogs (src.dotfiles.dotfiles)
+    yaml (src.dotfiles.dot_mechanism)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |172    |65.15 |114      |+58.00     |
++----------+-------+------+---------+-----------+
+|docstring |2      |0.76  |2        |=          |
++----------+-------+------+---------+-----------+
+|comment   |22     |8.33  |5        |+17.00     |
++----------+-------+------+---------+-----------+
+|empty     |68     |25.76 |40       |+28.00     |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |25     |16       |+9.00      |
++-----------+-------+---------+-----------+
+|refactor   |0      |0        |=          |
++-----------+-------+---------+-----------+
+|warning    |5      |2        |+3.00      |
++-----------+-------+---------+-----------+
+|error      |4      |2        |+2.00      |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++---------------------------+------+--------+---------+-----------+
+|module                     |error |warning |refactor |convention |
++===========================+======+========+=========+===========+
+|src.dotfiles.dotfiles      |50.00 |60.00   |0.00     |36.00      |
++---------------------------+------+--------+---------+-----------+
+|src.dotfiles.dot_mechanism |50.00 |40.00   |0.00     |64.00      |
++---------------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++-------------------------+------------+
+|message id               |occurrences |
++=========================+============+
+|missing-docstring        |17          |
++-------------------------+------------+
+|unused-import            |3           |
++-------------------------+------------+
+|undefined-variable       |3           |
++-------------------------+------------+
+|singleton-comparison     |2           |
++-------------------------+------------+
+|line-too-long            |2           |
++-------------------------+------------+
+|invalid-name             |2           |
++-------------------------+------------+
+|unused-variable          |1           |
++-------------------------+------------+
+|import-error             |1           |
++-------------------------+------------+
+|consider-using-enumerate |1           |
++-------------------------+------------+
+|broad-except             |1           |
++-------------------------+------------+
+|bad-continuation         |1           |
++-------------------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 6.82/10 (previous run: 7.41/10, -0.59)
+

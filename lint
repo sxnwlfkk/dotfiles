@@ -1,0 +1,5 @@
+#! /bin/zsh
+
+to_test=( ~/mysrc/dotfiles/src/dotfiles/dotfiles.py ~/mysrc/dotfiles/src/dotfiles/dot_mechanism.py )
+
+pylint ${to_test} > py_lint.txt | less 

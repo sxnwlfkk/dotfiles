@@ -1,0 +1,8 @@
+#! /bin/sh
+
+python ~/mysrc/dotfiles/src/dotfiles/dotfiles.py $@
+
+
+valami () {
+    echo "valami"
+}
