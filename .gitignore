@@ -6,3 +6,4 @@ logs
 logs/*
 .cache
 *.pyc
+py_lint.txt
