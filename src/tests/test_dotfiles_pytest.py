@@ -1,7 +1,10 @@
 #! /usr/bin/env python
 
-from src.dotfiles.dotfiles import strip_unneeded, \
-        check_slashes, generate_target_filenames
+from src.dotfiles.dot_mechanism import (
+    strip_unneeded,
+    check_slashes,
+    generate_target_filenames,
+)
 
 import pytest
 

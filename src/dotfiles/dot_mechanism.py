@@ -43,7 +43,7 @@ def call_command(command):
 def setup_links(backup_folders, repositories, private, log):
     log.info("Making private symlinks")
     make_private_symlinks(backup_folders, repositories, log)
-    log.info('Private value: ' + args.private)
+    log.info('Private value: ' + private)
     if private != 'true':
         log.info("Making public hard copies")
         make_public_copies(backup_folders, repositories, log)
