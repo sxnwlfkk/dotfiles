@@ -14,28 +14,27 @@ W:  6, 0: Unused import subprocess (unused-import)
 W:  7, 0: Unused import shlex (unused-import)
 W:  8, 0: Unused check_slashes imported from dot_mechanism (unused-import)
 ************* Module src.dotfiles.dot_mechanism
-C: 57, 0: Wrong continued indentation (add 1 space).
+C: 56, 0: Wrong continued indentation (add 1 space).
                             + '/')
                             ^| (bad-continuation)
-C: 84, 0: Line too long (106/100) (line-too-long)
+C: 83, 0: Line too long (106/100) (line-too-long)
 C:  1, 0: Missing module docstring (missing-docstring)
-W: 27,11: Catching too general exception Exception (broad-except)
-C: 27, 4: Invalid variable name "e" (invalid-name)
-C: 33, 0: Missing function docstring (missing-docstring)
-C: 43, 0: Missing function docstring (missing-docstring)
-E: 46,33: Undefined variable 'args' (undefined-variable)
-C: 52, 0: Missing function docstring (missing-docstring)
-C: 73, 0: Missing function docstring (missing-docstring)
-C: 90, 0: Missing function docstring (missing-docstring)
-C: 97, 0: Missing function docstring (missing-docstring)
-C:118, 0: Missing function docstring (missing-docstring)
-C:119, 4: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
-C:128, 0: Missing function docstring (missing-docstring)
-C:134, 0: Missing function docstring (missing-docstring)
-C:140, 0: Missing function docstring (missing-docstring)
-E:148, 8: Undefined variable 'log' (undefined-variable)
-W:147, 4: Unused variable 'err' (unused-variable)
-C:151, 0: Missing function docstring (missing-docstring)
+W: 26,11: Catching too general exception Exception (broad-except)
+C: 26, 4: Invalid variable name "e" (invalid-name)
+C: 32, 0: Missing function docstring (missing-docstring)
+C: 42, 0: Missing function docstring (missing-docstring)
+C: 51, 0: Missing function docstring (missing-docstring)
+C: 72, 0: Missing function docstring (missing-docstring)
+C: 89, 0: Missing function docstring (missing-docstring)
+C: 96, 0: Missing function docstring (missing-docstring)
+C:117, 0: Missing function docstring (missing-docstring)
+C:118, 4: Consider using enumerate instead of iterating with range and len (consider-using-enumerate)
+C:127, 0: Missing function docstring (missing-docstring)
+C:133, 0: Missing function docstring (missing-docstring)
+C:139, 0: Missing function docstring (missing-docstring)
+E:147, 8: Undefined variable 'log' (undefined-variable)
+W:146, 4: Unused variable 'err' (unused-variable)
+C:150, 0: Missing function docstring (missing-docstring)
 
 
 Report
@@ -48,13 +47,13 @@ Statistics by type
 +---------+-------+-----------+-----------+------------+---------+
 |type     |number |old number |difference |%documented |%badname |
 +=========+=======+===========+===========+============+=========+
-|module   |2      |1          |+1.00      |0.00        |0.00     |
+|module   |2      |2          |=          |0.00        |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 |class    |0      |0          |=          |0           |0        |
 +---------+-------+-----------+-----------+------------+---------+
 |method   |0      |0          |=          |0           |0        |
 +---------+-------+-----------+-----------+------------+---------+
-|function |17     |13         |+4.00      |11.76       |0.00     |
+|function |17     |17         |=          |11.76       |0.00     |
 +---------+-------+-----------+-----------+------------+---------+
 
 
@@ -74,13 +73,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |172    |65.15 |114      |+58.00     |
+|code      |172    |65.40 |172      |=          |
 +----------+-------+------+---------+-----------+
 |docstring |2      |0.76  |2        |=          |
 +----------+-------+------+---------+-----------+
-|comment   |22     |8.33  |5        |+17.00     |
+|comment   |22     |8.37  |22       |=          |
 +----------+-------+------+---------+-----------+
-|empty     |68     |25.76 |40       |+28.00     |
+|empty     |67     |25.48 |68       |-1.00      |
 +----------+-------+------+---------+-----------+
 
 
@@ -104,13 +103,13 @@ Messages by category
 +-----------+-------+---------+-----------+
 |type       |number |previous |difference |
 +===========+=======+=========+===========+
-|convention |25     |16       |+9.00      |
+|convention |25     |25       |=          |
 +-----------+-------+---------+-----------+
 |refactor   |0      |0        |=          |
 +-----------+-------+---------+-----------+
-|warning    |5      |2        |+3.00      |
+|warning    |5      |5        |=          |
 +-----------+-------+---------+-----------+
-|error      |4      |2        |+2.00      |
+|error      |3      |4        |-1.00      |
 +-----------+-------+---------+-----------+
 
 
@@ -121,9 +120,9 @@ Messages by category
 +---------------------------+------+--------+---------+-----------+
 |module                     |error |warning |refactor |convention |
 +===========================+======+========+=========+===========+
-|src.dotfiles.dotfiles      |50.00 |60.00   |0.00     |36.00      |
+|src.dotfiles.dotfiles      |66.67 |60.00   |0.00     |36.00      |
 +---------------------------+------+--------+---------+-----------+
-|src.dotfiles.dot_mechanism |50.00 |40.00   |0.00     |64.00      |
+|src.dotfiles.dot_mechanism |33.33 |40.00   |0.00     |64.00      |
 +---------------------------+------+--------+---------+-----------+
 
 
@@ -138,7 +137,7 @@ Messages
 +-------------------------+------------+
 |unused-import            |3           |
 +-------------------------+------------+
-|undefined-variable       |3           |
+|undefined-variable       |2           |
 +-------------------------+------------+
 |singleton-comparison     |2           |
 +-------------------------+------------+
@@ -161,5 +160,5 @@ Messages
 
 Global evaluation
 -----------------
-Your code has been rated at 6.82/10 (previous run: 7.41/10, -0.59)
+Your code has been rated at 7.13/10 (previous run: 6.82/10, +0.32)
 

@@ -18,6 +18,7 @@ def read_dotfile(path, def_dotpath, log):
     log.debug(dot_path)
     return load_dotfile(dot_path, def_dotpath, log)
 
+
 def load_dotfile(path, def_dotpath, log):
     "Loads given dotfile, with `with`."
     try:
@@ -29,7 +30,10 @@ def load_dotfile(path, def_dotpath, log):
 
 # Calling commands
 
+
 def call_command(command):
+    """Executes a shell command through the subprocess module. Returns
+    a tuple (stdout, stderr)."""
     process = subprocess.Popen(shlex.split(command),
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE,
@@ -40,6 +44,7 @@ def call_command(command):
 # Symlinking
 #
 def setup_links(backup_folders, repositories, private, log):
+    """Invokes the make_private_symlinks function and if there are public files in the config file, invokes the make_public_copies function."""
     log.info("Making private symlinks")
     make_private_symlinks(backup_folders, repositories, log)
     log.info('Private value: ' + private)
@@ -49,6 +54,8 @@ def setup_links(backup_folders, repositories, private, log):
 
 
 def make_private_symlinks(backup_folders, repositories, log):
+    "Reads the config and makes symlinks of all entries. Uses functions to \
+    ensure folder availability."
 
     for foldername, folder in backup_folders.items():
 
@@ -70,6 +77,8 @@ def make_private_symlinks(backup_folders, repositories, log):
 
 
 def make_public_copies(backup_folders, repositories, log):
+    "Makes hard copies of files designated public in the config file to the \
+    public repository."
 
     for foldername, folder in backup_folders.items():
         from_dir = check_dir(repositories['private']['dir']) + '/' + foldername + '/'
@@ -85,7 +94,7 @@ def make_public_copies(backup_folders, repositories, log):
                 make_symlink(from_file, to_file, log)
                 log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
-
+# TODO Seems like I don't use this anymore. Remove?
 def strip_unneeded(filename):
     if filename[0] == '~':
         filename = filename[1:]
@@ -93,6 +102,7 @@ def strip_unneeded(filename):
         return filename[1:]
 
 
+# TODO What is this doing again?
 def generate_target_filenames(from_dir, to_dir, dotfile, status):
     try:
         assert isinstance(dotfile, str)
@@ -115,6 +125,7 @@ def generate_target_filenames(from_dir, to_dir, dotfile, status):
 
 
 def check_slashes(filename):
+    "Makes sure there are no double slashes in file path."
     for i in range(len(filename)):
         if i+1 < len(filename):
             if filename[i] == '/' and filename[i+1] == '/':
@@ -125,18 +136,21 @@ def check_slashes(filename):
 
 
 def make_symlink(from_file, to_file, log):
+    "Call symlink shell command."
     command = 'ln -sf {0} {1}'.format(from_file, to_file)
     log.debug('Command called: ' + command)
     call_command(command)
 
 
 def expand_user(path):
+    "Expands the ~ to real user path."
     if path[0] == '~':
         path = os.path.expanduser('~') + path[1:]
     return path
 
 
 def check_dir(path):
+    "Raises error if file doesn't exist."
     path = expand_user(path)
     path = os.path.dirname(path)
     if os.path.exists(path):
@@ -148,6 +162,7 @@ def check_dir(path):
 
 
 def ensure_dir(path):
+    "Checks if dir on path exists, else makes it."
     try:
         value = check_dir(path)
         return value
