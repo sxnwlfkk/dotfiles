@@ -44,7 +44,8 @@ def call_command(command):
 # Symlinking
 #
 def setup_links(backup_folders, repositories, private, log):
-    """Invokes the make_private_symlinks function and if there are public files in the config file, invokes the make_public_copies function."""
+    "Invokes the make_private_symlinks function and if there are public files \
+    in the config file, invokes the make_public_copies function."
     log.info("Making private symlinks")
     make_private_symlinks(backup_folders, repositories, log)
     log.info('Private value: ' + private)
@@ -102,8 +103,15 @@ def strip_unneeded(filename):
         return filename[1:]
 
 
-# TODO What is this doing again?
 def generate_target_filenames(from_dir, to_dir, dotfile, status):
+    "Checks if the filename is a string or a list (as when file has two names,\
+    one in backup repository, one in the target directory, for example \
+    ranger.conf if backup, and rc.conf when in ~/.config/ranger/rc.conf). \
+    If string, it concatenates to the to and from directories the dotfile's \
+    name. If 'private' passed in as status (meaning it symlinks to working \
+    dir), makes 'from_file' from_dir + the list's firt item, 'to_file' to_dir \
+    + the list's second item, if 'public' passed, it'll have the original \
+    backup name in the public repository."
     try:
         assert isinstance(dotfile, str)
         from_file = check_slashes(from_dir + '/' + dotfile)
