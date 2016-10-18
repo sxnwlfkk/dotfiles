@@ -3,12 +3,13 @@ TODO
 * Info
 Because the way git behaves with links, I need to rethink the dotsync idea.
 I think, since I want to autamate the public git repository, but that don't needs to be perfectly up to date, I can get away with copying instead of symlinking.
-* Project structure [1/4]
-** TODO Separating mechanism and policy
+* Project structure [2/4]
+** DONE Separating mechanism and policy
+   CLOSED: [2016-10-18 k 09:59]
 ** DONE CLI argument should write over dotfile setup
 CLOSED: [2016-08-30 k 17:16]
 OR there should be no policy in the dotfile, only in CLI
-No policy in dotfile.
+- [X] No policy in dotfile.
 ** TODO setup.py
 ** TODO Documentation
 * Dotfiles.py [0/2]

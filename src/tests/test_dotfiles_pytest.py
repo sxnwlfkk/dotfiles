@@ -14,6 +14,7 @@ def test_strip_unneeded_1():
             'Valami'
 
 
+
 def test_strip_unneeded_2():
     print('In test_strip_unneeded')
     assert strip_unneeded('/Valami') == \

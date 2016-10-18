@@ -18,7 +18,6 @@ def read_dotfile(path, def_dotpath, log):
     log.debug(dot_path)
     return load_dotfile(dot_path, def_dotpath, log)
 
-
 def load_dotfile(path, def_dotpath, log):
     "Loads given dotfile, with `with`."
     try:
