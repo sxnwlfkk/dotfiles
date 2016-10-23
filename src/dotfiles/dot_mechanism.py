@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
 import os
-import subprocess
 import shlex
+import subprocess
+
 import yaml
 
 
@@ -20,7 +21,8 @@ def read_dotfile(path, def_dotpath, log):
 
 
 def load_dotfile(path, def_dotpath, log):
-    "Loads given dotfile, with `with`."
+    "Tries to load given config file. If it can't, logs the error: no valid \
+    path to dotfile specified, or no file in the default directory (~/.dotfile)"
     try:
         with open(path, 'r') as ymlfile:
             return yaml.load(ymlfile)
@@ -76,7 +78,7 @@ def make_private_symlinks(backup_folders, repositories, log):
                 make_symlink(from_file, to_file, log)
                 log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
-
+# TODO it makes symlinks instead of copies
 def make_public_copies(backup_folders, repositories, log):
     "Makes hard copies of files designated public in the config file to the \
     public repository."
@@ -92,7 +94,7 @@ def make_public_copies(backup_folders, repositories, log):
             for dotfile in st_dir:
                 from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
                 ensure_dir(to_file)
-                make_symlink(from_file, to_file, log)
+                make_copy(from_file, to_file, log)
                 log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
 # TODO Seems like I don't use this anymore. Remove?
@@ -149,6 +151,11 @@ def make_symlink(from_file, to_file, log):
     log.debug('Command called: ' + command)
     call_command(command)
 
+def make_copy(from_file, to_file, log):
+    "Call cp shell command."
+    command = 'cp {0} {1}'.format(from_file, to_file)
+    log.debug('Command called: ' + command)
+    call_command(command)
 
 def expand_user(path):
     "Expands the ~ to real user path."
