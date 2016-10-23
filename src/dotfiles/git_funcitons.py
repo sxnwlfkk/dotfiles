@@ -1,7 +1,8 @@
 # Functions related to git
 
+from os import chdir, getcwd
+
 from dot_mechanism import call_command
-from os import getcwd, chdir
 
 
 def git_clone(source_url, dest_dir):
@@ -17,8 +18,18 @@ def git_commit(dest_dir, message=''):
     or `git ci -m 'message'`, then changes back to the original dir."
     curr_dir = getcwd()
     chdir(dest_dir)
-    out, _ = call_command('git add .')
+    stdout, stderr = call_command('git status')
+    # print(stdout)
+    stdout, stderr = call_command('git add .')
+    # print("After git add called:\n", stdout, stderr)
+    stdout, stderr = call_command('git status')
+    # print(stdout)
     if message == '':
-        out, _ = call_command("git ci -m 'Backup from command line'")
+        stdout, stderr = call_command('git commit -m "Backup from dotfiles.py"')
     else:
-        out, _ = call_command("git ci -m {0}".format(message))
+        stdout, stderr = call_command('git commit -m "{0}"'.format(message))
+
+    # print('After commit:\n', stdout, stderr)
+
+    out, _ = call_command('git push origin master')
+    chdir(curr_dir)

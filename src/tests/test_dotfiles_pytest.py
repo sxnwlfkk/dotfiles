@@ -1,13 +1,14 @@
 #! /usr/bin/env python
 
+from os import chdir, getcwd
 from os.path import exists as path_exists
 from shutil import rmtree
 
 import pytest
-from src.dotfiles.dot_mechanism import (check_slashes, expand_user,
-                                        generate_target_filenames,
+from src.dotfiles.dot_mechanism import (call_command, check_slashes,
+                                        expand_user, generate_target_filenames,
                                         strip_unneeded)
-from src.dotfiles.git_funcitons import git_clone
+from src.dotfiles.git_funcitons import git_clone, git_commit
 
 TEST_DIR = expand_user('~/mysrc/dotfiles/src/tests')
 
@@ -46,3 +47,34 @@ def test_git_clone_fn():
     else:
         print("Stderr is: " + stderr)
     rmtree(TEST_DIR+'/test_git_clone')
+
+def test_git_commit_fn():
+    print('Testing git commit auxiliary function.')
+
+    local_test_dir_1 = TEST_DIR+'/test_git_commit'
+    local_test_dir_2 = local_test_dir_1 + '2'
+
+    # Cloning with the previously tested git_clone()
+    stdout, stderr = git_clone('https://github.com/sxnwlfkk/configs.git', local_test_dir_1)
+
+    # Setting up the folder and the to be committed new file
+    curr_dir = getcwd()
+    chdir(local_test_dir_1)
+    stdout, stderr = call_command('touch test1.txt')
+    chdir(curr_dir)
+
+    # Testing the commit function
+    git_commit(local_test_dir_1, 'test commit')
+    git_clone('https://github.com/sxnwlfkk/configs.git', local_test_dir_2)
+
+    assert path_exists(local_test_dir_2+'/test1.txt')
+
+    # Removing test file from repository
+    chdir(local_test_dir_1)
+    call_command('rm test1.txt')
+    chdir(curr_dir)
+    git_commit(local_test_dir_1, 'test commit')
+
+    # Removing test folders
+    rmtree(local_test_dir_1)
+    rmtree(local_test_dir_2)
