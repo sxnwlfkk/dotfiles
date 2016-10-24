@@ -40,10 +40,12 @@ def logr(args):
 
     logging.basicConfig(level=logging.ERROR)
     log = logging.getLogger('dotfiles')
-    log_path = os.path.dirname(os.path.realpath(__file__)) + '/' + 'dotfiles.log'
+    log_path = os.path.dirname(
+        os.path.realpath(__file__)) + '/' + 'dotfiles.log'
     fh = logging.FileHandler(log_path)
 
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
 
     log.addHandler(fh)
@@ -79,6 +81,24 @@ def parse_cl_args():
     return args
 
 
+###############
+# Usage modes #
+###############
+
+def setup():
+    "Makes symlinks from private repo to working directories for dotfiles. \
+    IF public argument set, makes directory for public repo, if not present \
+    clones repo, if URL present in ~/.dotfiles, copies the public files to it \
+    and commit/pushes it, as if to test."
+    pass
+
+
+def backup():
+    "Commits every change in private repo, then commits it. IF public is set \
+    copies public files from private repo, to public dir, then commits and \
+    pushes."
+    pass
+
 ########
 # Main #
 ########
@@ -94,13 +114,12 @@ def main():
     # if args.private == False:
     #     github_sync()
     if args.setup == True:
-        setup_links(cnf['backup-folders'], cnf['repositories'], args.private, log)
+        setup_links(cnf['backup-folders'],
+                    cnf['repositories'], args.private, log)
     else:
         log.info('Not running setup.')
         log.debug(args.setup)
     # TODO If there is a public repo, sync it with the symlinks in it
-
-
 
 
 if __name__ == '__main__':
