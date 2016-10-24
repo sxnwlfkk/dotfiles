@@ -49,6 +49,8 @@ def test_git_clone_fn():
     rmtree(TEST_DIR+'/test_git_clone')
 
 def test_git_commit_fn():
+    "Very expensive test, lots of communication with github servers, and user \
+    interaction needed."
     print('Testing git commit auxiliary function.')
 
     local_test_dir_1 = TEST_DIR+'/test_git_commit'
