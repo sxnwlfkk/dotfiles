@@ -28,28 +28,25 @@ in ~/.dotfile.
 def logr(args):
     try:
         import coloredlogs
-    except Error:
-        pass
+        if args.verbose == None:
+        	coloredlogs.install(level='ERROR')
+    	elif args.verbose == 1:
+        	coloredlogs.install(level='INFO')
+    	elif args.verbose >= 2:
+        	coloredlogs.install(level='DEBUG')
+    except ImportError:
+        logging.basicConfig(level=logging.ERROR)
+    	log = logging.getLogger('dotfiles')
+    	log_path = os.path.dirname(
+        	os.path.realpath(__file__)) + '/' + 'dotfiles.log'
+    	fh = logging.FileHandler(log_path)
 
-    if args.verbose == None:
-        coloredlogs.install(level='ERROR')
-    elif args.verbose == 1:
-        coloredlogs.install(level='INFO')
-    elif args.verbose >= 2:
-        coloredlogs.install(level='DEBUG')
-
-    logging.basicConfig(level=logging.ERROR)
-    log = logging.getLogger('dotfiles')
-    log_path = os.path.dirname(
-        os.path.realpath(__file__)) + '/' + 'dotfiles.log'
-    fh = logging.FileHandler(log_path)
-
-    formatter = logging.Formatter(
+    	formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
+    	fh.setFormatter(formatter)
 
-    log.addHandler(fh)
-    return log
+    	log.addHandler(fh)
+    	return log
 
 
 ################################
