@@ -1,8 +1,6 @@
 #! /bin/sh
 
-python ~/mysrc/dotfiles/src/dotfiles/dotfiles.py $@
+dir=$(pwd)
 
+python $dir/src/dotfiles/dotfiles.py $@
 
-valami () {
-    echo "valami"
-}
