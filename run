@@ -2,5 +2,5 @@
 
 dir=$(pwd)
 
-python $dir/src/dotfiles/dotfiles.py $@
+python3 $dir/src/dotfiles/dotfiles.py $@
 
