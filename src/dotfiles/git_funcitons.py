@@ -2,7 +2,7 @@
 
 from os import chdir, getcwd
 
-from dot_mechanism import call_command
+from dotfiles.dot_mechanism import call_command
 
 
 def git_clone(source_url, dest_dir):
