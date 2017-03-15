@@ -1,10 +1,62 @@
 #! /usr/bin/env python
 
 import os
-import shlex
-import subprocess
-
 import yaml
+
+from command_calling import call_command
+from git_funcitons import git_clone
+
+
+# Major functions, called from the main file
+def clone_public_repo(config):
+    """Check if public directory exists and clone to it the public repo."""
+    clone_dir = config['repositories']['public']['dir']
+    ensure_dir(clone_dir)
+
+    # Try to clone public repository, if directory has content, git will abort
+    git_clone(config['repositories']['public']['url'], clone_dir)
+
+
+def make_private_symlinks(backup_folders, repositories, log):
+    """Reads the config and makes symlinks of all entries. Uses functions to \
+    ensure folder availability."""
+
+    for foldername, folder in backup_folders.items():
+
+        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername
+                             + '/')
+
+        if 'target' not in backup_folders[foldername]:
+            backup_folders[foldername]['target'] = '~/'
+
+        to_dir = ensure_dir(backup_folders[foldername]['target'])
+
+        for status, st_dir in folder.items():
+            if status == 'target':
+                continue
+            for dotfile in st_dir:
+                from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile, 'private')
+                make_symlink(from_file, to_file, log)
+                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
+
+
+def make_public_copies(backup_folders, repositories, log):
+    "Makes hard copies of files designated public in the config file to the \
+    public repository."
+
+    for foldername, folder in backup_folders.items():
+        from_dir = check_dir(repositories['private']['dir']) + '/' + foldername + '/'
+
+        target_public = check_slashes(repositories['public']['dir'] + '/' + foldername)
+
+        for status, st_dir in folder.items():
+            if status == 'target' or status == 'private':
+                continue
+            for dotfile in st_dir:
+                from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
+                ensure_dir(to_file)
+                make_copy(from_file, to_file, log)
+                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
 
 
 # Loading and reading dotfiles
@@ -33,87 +85,19 @@ def load_dotfile(path, def_dotpath, log):
 # Calling commands
 
 
-def call_command(command):
-    """Executes a shell command through the subprocess module. Returns
-    a tuple (stdout, stderr)."""
-    process = subprocess.Popen(shlex.split(command),
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               universal_newlines=False,)
-    return process.communicate()
 
 
-# Symlinking
-#
-def setup_links(backup_folders, repositories, private, log):
-    "Invokes the make_private_symlinks function and if there are public files \
-    in the config file, invokes the make_public_copies function."
-    log.info("Making private symlinks")
-    make_private_symlinks(backup_folders, repositories, log)
-    log.info('Private value: ' + private)
-    if private != 'true':
-        log.info("Making public hard copies")
-        make_public_copies(backup_folders, repositories, log)
-
-
-def make_private_symlinks(backup_folders, repositories, log):
-    "Reads the config and makes symlinks of all entries. Uses functions to \
-    ensure folder availability."
-
-    for foldername, folder in backup_folders.items():
-
-        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername
-                            + '/')
-
-        if 'target' not in backup_folders[foldername]:
-            backup_folders[foldername]['target'] = '~/'
-
-        to_dir = ensure_dir(backup_folders[foldername]['target'])
-
-        for status, st_dir in folder.items():
-            if status == 'target':
-                continue
-            for dotfile in st_dir:
-                from_file, to_file = generate_target_filenames(from_dir, to_dir, dotfile, 'private')
-                make_symlink(from_file, to_file, log)
-                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
-
-# TODO it makes symlinks instead of copies
-def make_public_copies(backup_folders, repositories, log):
-    "Makes hard copies of files designated public in the config file to the \
-    public repository."
-
-    for foldername, folder in backup_folders.items():
-        from_dir = check_dir(repositories['private']['dir']) + '/' + foldername + '/'
-
-        target_public = check_slashes(repositories['public']['dir'] + '/' + foldername)
-
-        for status, st_dir in folder.items():
-            if status == 'target' or status == 'private':
-                continue
-            for dotfile in st_dir:
-                from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
-                ensure_dir(to_file)
-                make_copy(from_file, to_file, log)
-                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
-
-# TODO Seems like I don't use this anymore. Remove?
-def strip_unneeded(filename):
-    if filename[0] == '~':
-        filename = filename[1:]
-    if filename[0] == '/':
-        return filename[1:]
 
 
 def generate_target_filenames(from_dir, to_dir, dotfile, status):
-    "Checks if the filename is a string or a list (as when file has two names,\
+    """Checks if the filename is a string or a list (as when file has two names,\
     one in backup repository, one in the target directory, for example \
     ranger.conf if backup, and rc.conf when in ~/.config/ranger/rc.conf). \
-    If string, it concatenates to the to and from directories the dotfile's \
+    If string, it concatenates to the `to` and `from` directories the dotfile's \
     name. If 'private' passed in as status (meaning it symlinks to working \
-    dir), makes 'from_file' from_dir + the list's firt item, 'to_file' to_dir \
+    dir), makes 'from_file' from_dir + the list's first item, 'to_file' to_dir \
     + the list's second item, if 'public' passed, it'll have the original \
-    backup name in the public repository."
+    backup name in the public repository."""
     try:
         assert isinstance(dotfile, str)
         from_file = check_slashes(from_dir + '/' + dotfile)
@@ -151,11 +135,13 @@ def make_symlink(from_file, to_file, log):
     log.debug('Command called: ' + command)
     call_command(command)
 
+
 def make_copy(from_file, to_file, log):
     "Call cp shell command."
     command = 'cp {0} {1}'.format(from_file, to_file)
     log.debug('Command called: ' + command)
     call_command(command)
+
 
 def expand_user(path):
     "Expands the ~ to real user path."
@@ -186,3 +172,26 @@ def ensure_dir(path):
         path = os.path.dirname(path)
         os.makedirs(path)
         return path
+
+
+# Graveyard
+
+
+# I have no need for this, this is a policy function, should be solved in the main file
+# def setup_links(backup_folders, repositories, private, log):
+#     "Invokes the make_private_symlinks function and if there are public files \
+#     in the config file, invokes the make_public_copies function."
+#     log.info("Making private symlinks")
+#     make_private_symlinks(backup_folders, repositories, log)
+#     log.info('Private value: ' + private)
+#     if private != 'true':
+#         log.info("Making public hard copies")
+#         make_public_copies(backup_folders, repositories, log)
+
+
+# # TODO Seems like I don't use this anymore. Remove?
+# def strip_unneeded(filename):
+#     if filename[0] == '~':
+#         filename = filename[1:]
+#     if filename[0] == '/':
+#         return filename[1:]
