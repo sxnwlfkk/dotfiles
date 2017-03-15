@@ -4,3 +4,7 @@ cnf.yml
 dotfiles.log
 logs
 logs/*
+.cache
+*.pyc
+py_lint.txt
+.idea

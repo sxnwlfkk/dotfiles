@@ -1,5 +1,7 @@
 # dotfiles
-A dotfiles syncer and symlinker, written in python, with Git
+A dotfiles syncer and symlinker, written in python, with Git syncing support.
+
+## Master Not Yet Stable Or Finished
 
 ## Main features
 
@@ -21,5 +23,3 @@ A dotfiles syncer and symlinker, written in python, with Git
 * Absolute path to private repository dir
 * All sections have two parts a general, and a private
 * Section for main config files (.zshrc, .vimrc, oh-my-zsh.sh, etc.)
-
-
