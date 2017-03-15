@@ -24,7 +24,7 @@ in ~/.dotfile.
 ###########
 
 def logr(args):
-    if args.verbose == None:
+    if args.verbose is None:
         logging.basicConfig(level=logging.ERROR)
     elif args.verbose == 1:
         logging.basicConfig(level=logging.INFO)
@@ -90,35 +90,42 @@ def parse_cl_args():
 # Usage modes #
 ###############
 
-# TODO logging
 def setup(args, config, log):
     """Makes symlinks from private repo to working directories for dotfiles. \
     IF public argument set, makes directory for public repo, if not present \
     clones repo, if URL present in ~/.dotfiles, copies the public files to it \
     and commit/pushes it, as if to test."""
 
+    log.info("Setting up dotfiles.")
+
     # Symlink
+    log.info("Making private symlinks.")
     make_private_symlinks(config["backup-folders"], config['repositories'], log)
 
     # Copy public files if needed
     if args.public:
         if not args.no_git:
+            log.info("Cloning public repo.")
             clone_public_repo(config)
+        log.info("Copying public files.")
         make_public_copies(config["backup-folders"], config['repositories'], log)
 
 
-# TODO logging
 def backup(args, config, log):
     """Commits every change in private repo, then commits it. IF public is set
     copies public files from private repo, to public dir, then commits and
     pushes."""
+
     if not args.no_git:
+        log.info("Committing changes in backup directory.")
         git_commit(config["repositories"]["private"]["dir"],
                    "Backup made by dotfiles.")
 
     if args.public:
+        log.info("Copying public files.")
         make_public_copies(config["backup-folders"], config['repositories'], log)
         if not args.no_git:
+            log.info("Committing changes in public repository.")
             git_commit(config["repositories"]["public"]["dir"],
                        "Backup made by dotfiles.")
 
@@ -142,6 +149,7 @@ def main():
         if args.backup:
             backup(args, cnf, log)
 
+    log.info("All done.")
 
 if __name__ == '__main__':
     main()

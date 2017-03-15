@@ -56,7 +56,7 @@ def make_public_copies(backup_folders, repositories, log):
                 from_file, to_file = generate_target_filenames(from_dir, target_public, dotfile, 'public')
                 ensure_dir(to_file)
                 make_copy(from_file, to_file, log)
-                log.info('{0} is symlinked to {1}'.format(dotfile, to_file))
+                log.info('{0} is copied to {1}'.format(dotfile, to_file))
 
 
 # Loading and reading dotfiles
@@ -81,12 +81,6 @@ def load_dotfile(path, def_dotpath, log):
     except Exception as e:
         log.error("No dotfiles specified, or ~/{0} not present".format(def_dotpath))
         log.debug(e)
-
-# Calling commands
-
-
-
-
 
 
 def generate_target_filenames(from_dir, to_dir, dotfile, status):
@@ -173,25 +167,3 @@ def ensure_dir(path):
         os.makedirs(path)
         return path
 
-
-# Graveyard
-
-
-# I have no need for this, this is a policy function, should be solved in the main file
-# def setup_links(backup_folders, repositories, private, log):
-#     "Invokes the make_private_symlinks function and if there are public files \
-#     in the config file, invokes the make_public_copies function."
-#     log.info("Making private symlinks")
-#     make_private_symlinks(backup_folders, repositories, log)
-#     log.info('Private value: ' + private)
-#     if private != 'true':
-#         log.info("Making public hard copies")
-#         make_public_copies(backup_folders, repositories, log)
-
-
-# # TODO Seems like I don't use this anymore. Remove?
-# def strip_unneeded(filename):
-#     if filename[0] == '~':
-#         filename = filename[1:]
-#     if filename[0] == '/':
-#         return filename[1:]
