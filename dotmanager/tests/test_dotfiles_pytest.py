@@ -4,20 +4,19 @@ from os import chdir, getcwd
 from os.path import exists as path_exists
 from shutil import rmtree
 
-import pytest
-from src.dotfiles.dot_mechanism import (call_command, check_slashes,
-                                        expand_user, generate_target_filenames,
-                                        strip_unneeded)
-from src.dotfiles.git_funcitons import git_clone, git_commit
+from ..dot_mechanism import (call_command, check_slashes,
+                                      expand_user, generate_target_filenames,
+                                      strip_unneeded)
 
-TEST_DIR = expand_user('~/mysrc/dotfiles/src/tests')
+from git_funcitons import git_clone, git_commit
+
+TEST_DIR = expand_user('~/mysrc/dotmanager/src/tests')
 
 
 def test_strip_unneeded_1():
     print('In test_strip_unneeded')
     assert strip_unneeded('~/Valami') == \
-            'Valami'
-
+           'Valami'
 
 
 def test_strip_unneeded_2():

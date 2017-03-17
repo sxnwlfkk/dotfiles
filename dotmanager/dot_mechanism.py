@@ -3,8 +3,8 @@
 import os
 import yaml
 
-from command_calling import call_command
-from git_funcitons import git_clone
+from .command_calling import call_command
+from .git_funcitons import git_clone
 
 
 # Major functions, called from the main file
@@ -59,7 +59,7 @@ def make_public_copies(backup_folders, repositories, log):
                 log.info('{0} is copied to {1}'.format(dotfile, to_file))
 
 
-# Loading and reading dotfiles
+# Loading and reading dotmanager
 
 def read_dotfile(path, def_dotpath, log):
     "Decides if there is a custom dotfile or use default."
@@ -79,7 +79,7 @@ def load_dotfile(path, def_dotpath, log):
         with open(path, 'r') as ymlfile:
             return yaml.load(ymlfile)
     except Exception as e:
-        log.error("No dotfiles specified, or ~/{0} not present".format(def_dotpath))
+        log.error("No dotmanager specified, or ~/{0} not present".format(def_dotpath))
         log.debug(e)
 
 
