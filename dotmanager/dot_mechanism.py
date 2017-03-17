@@ -79,7 +79,7 @@ def load_dotfile(path, def_dotpath, log):
         with open(path, 'r') as ymlfile:
             return yaml.load(ymlfile)
     except Exception as e:
-        log.error("No dotmanager specified, or ~/{0} not present".format(def_dotpath))
+        log.error("No dotfile specified, or ~/{0} not present".format(def_dotpath))
         log.debug(e)
 
 
