@@ -2,7 +2,7 @@
 
 from os import chdir, getcwd
 
-from command_calling import call_command
+from .command_calling import call_command
 
 
 def git_clone(source_url, dest_dir):
@@ -27,7 +27,7 @@ def git_commit(dest_dir, message='', branch="master"):
     # print(stdout)
     if message == '':
         stdout, stderr = call_command(
-            'git commit -m "Backup from dotfiles.py"')
+            'git commit -m "Backup from dotmanager.py"')
     else:
         stdout, stderr = call_command('git commit -m "{0}"'.format(message))
 

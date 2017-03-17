@@ -1,3 +1,4 @@
+yaml
 coloredlogs==5.0
 humanfriendly==1.44.7
 pkg-resources==0.0.0

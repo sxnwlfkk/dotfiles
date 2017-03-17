@@ -2,5 +2,5 @@
 
 dir=$(pwd)
 
-python3 $dir/src/dotfiles/dotfiles.py $@
+python3 -m dotmanager.dotfiles.py $@
 

@@ -1,6 +1,7 @@
 import subprocess
 import shlex
 
+
 def call_command(command):
     """Executes a shell command through the subprocess module. Returns
     a tuple (stdout, stderr)."""

@@ -4,8 +4,8 @@ import argparse
 import logging
 import os
 
-from dot_mechanism import read_dotfile, make_private_symlinks, make_public_copies, clone_public_repo
-from git_funcitons import git_commit
+from .dot_mechanism import read_dotfile, make_private_symlinks, make_public_copies, clone_public_repo
+from .git_funcitons import git_commit
 
 # Constants
 
@@ -31,21 +31,21 @@ def logr(args):
     elif args.verbose >= 1:
         logging.basicConfig(level=logging.DEBUG)
 
-    log = logging.getLogger('dotfiles')
+    log = logging.getLogger('dotmanager')
 
-    dir_of_this_file = os.path.dirname(__file__)
-    dir_above_this_file, _ = os.path.split(dir_of_this_file)
-    root_dir, _ = os.path.split(dir_above_this_file)
-
-    log_path = root_dir + '/logs/dotfiles.log'
-    print(log_path)
-    fh = logging.FileHandler(log_path)
-
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fh.setFormatter(formatter)
-
-    log.addHandler(fh)
+    # dir_of_this_file = os.path.dirname(__file__)
+    # dir_above_this_file, _ = os.path.split(dir_of_this_file)
+    # root_dir, _ = os.path.split(dir_above_this_file)
+    #
+    # log_path = root_dir + '/logs/dotmanager.log'
+    # print(log_path)
+    # fh = logging.FileHandler(log_path)
+    #
+    # formatter = logging.Formatter(
+    #     '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # fh.setFormatter(formatter)
+    #
+    # log.addHandler(fh)
     return log
 
 
@@ -91,20 +91,23 @@ def parse_cl_args():
 ###############
 
 def setup(args, config, log):
-    """Makes symlinks from private repo to working directories for dotfiles. \
+    """Makes symlinks from private repo to working directories for dotmanager. \
     IF public argument set, makes directory for public repo, if not present \
-    clones repo, if URL present in ~/.dotfiles, copies the public files to it \
+    clones repo, if URL present in ~/.dotmanager, copies the public files to it \
     and commit/pushes it, as if to test."""
 
-    log.info("Setting up dotfiles.")
+    log.info("Setting up dotmanager.")
 
     # Symlink
     log.info("Making private symlinks.")
     make_private_symlinks(config["backup-folders"], config['repositories'], log)
 
     # Copy public files if needed
-    if args.public:
-        if not args.no_git:
+    if args.public and "public" in config["repositories"] \
+            and "dir" in config["repositories"]["public"] \
+            and config["repositories"]["public"]["dir"] != "":
+        if not args.no_git and "url" in config["repositories"]["private"]\
+                    and config["repositories"]["private"]["url"] != "":
             log.info("Cloning public repo.")
             clone_public_repo(config)
         log.info("Copying public files.")
@@ -116,18 +119,21 @@ def backup(args, config, log):
     copies public files from private repo, to public dir, then commits and
     pushes."""
 
-    if not args.no_git:
+    if not args.no_git and "url" in config["repositories"]["private"] \
+            and config["repositories"]["private"]["url"] != "":
         log.info("Committing changes in backup directory.")
         git_commit(config["repositories"]["private"]["dir"],
-                   "Backup made by dotfiles.")
+                   "Backup made by dotmanager.")
 
     if args.public:
         log.info("Copying public files.")
-        make_public_copies(config["backup-folders"], config['repositories'], log)
-        if not args.no_git:
-            log.info("Committing changes in public repository.")
-            git_commit(config["repositories"]["public"]["dir"],
-                       "Backup made by dotfiles.")
+        if "public" in config["repositories"]:
+            make_public_copies(config["backup-folders"], config["repositories"], log)
+            if not args.no_git and "url" in config["repositories"]["private"]\
+                    and config["repositories"]["private"]["url"] != "":
+                log.info("Committing changes in public repository.")
+                git_commit(config["repositories"]["public"]["dir"],
+                       "Backup made by dotmanager.")
 
 
 ########
@@ -135,14 +141,13 @@ def backup(args, config, log):
 ########
 
 def main():
-
     args = parse_cl_args()
     log = logr(args)
     log.debug(args.dotfile)
     cnf = read_dotfile(args.dotfile, DEF_DOTFILE, log)
 
     if not args.setup and not args.backup or not args.private and not args.public:
-        print("Invalid arguments. You can get help with dotfiles -h.")
+        print("Invalid arguments. You can get help with dotmanager -h.")
     else:
         if args.setup:
             setup(args, cnf, log)

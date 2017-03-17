@@ -1,0 +1,29 @@
+# Example user config for npp_dotmanager in YAML
+
+repositories:
+    private:
+        dir: /home/user/path/to/backup/directory
+        url: https://example@bitbucket.org/configs.git
+    public:
+        dir: /home/user/path/to/public/respitory
+        url: https://github.com/example/configs.git
+
+backup-folders:
+    scripts:
+        target: ~/bin/
+        public:
+            - first_script
+            - second_script
+        private:
+            - third_script
+    home:
+        target: ~/
+        public:
+            - .vimrc
+            - .tmux.conf
+            - [.newsbeuterrc, ~/.newsbeuter/config/.newsbeuterrc]
+        private:
+            - .zshrc
+            - .dotfile
+            - .netrc
+            - [ranger.conf, ~/.config/ranger/rc.conf]
