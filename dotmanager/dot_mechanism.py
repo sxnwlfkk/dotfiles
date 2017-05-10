@@ -23,8 +23,7 @@ def make_private_symlinks(backup_folders, repositories, log):
 
     for foldername, folder in backup_folders.items():
 
-        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername
-                             + '/')
+        from_dir = check_dir(repositories['private']['dir'] + '/' + foldername + '/', log)
 
         if 'target' not in backup_folders[foldername]:
             backup_folders[foldername]['target'] = '~/'
@@ -144,7 +143,7 @@ def expand_user(path):
     return path
 
 
-def check_dir(path):
+def check_dir(path, log):
     "Raises error if file doesn't exist."
     path = expand_user(path)
     path = os.path.dirname(path)
@@ -156,10 +155,10 @@ def check_dir(path):
         log.exception('No such file: ', path)
 
 
-def ensure_dir(path):
+def ensure_dir(path, log):
     "Checks if dir on path exists, else makes it."
     try:
-        value = check_dir(path)
+        value = check_dir(path, log)
         return value
     except NameError:
         path = expand_user(path)

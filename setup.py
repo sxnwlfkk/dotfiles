@@ -6,7 +6,7 @@ def readme():
 
 setup(
     name='npp_dotmanager',
-    version='0.2.0',
+    version='0.2.2',
     description='N+1th dotmanager manager with public and private repository and git support',
     long_description=readme(),
     url='https://github.com/sxnwlfkk/dotmanager',
