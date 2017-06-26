@@ -6,7 +6,7 @@ npp_dotfiles makes it easy to use and manage your configuration files
     share with others separate from your private ones. Uses git to automatically push and pull
     repositories on backup.
     
-(Check out the Website!)[https://sxnwlfkk.github.io/dotmanager/]
+[Check out the Website!](https://sxnwlfkk.github.io/dotmanager/)
 
 __Current stable version is 0.2.0__
 
