@@ -5,6 +5,8 @@ npp_dotfiles makes it easy to use and manage your configuration files
     names in backup and working dirs. More, you can manage the config files, that you want to
     share with others separate from your private ones. Uses git to automatically push and pull
     repositories on backup.
+    
+(Check out the Website!)[https://sxnwlfkk.github.io/dotmanager/]
 
 __Current stable version is 0.2.0__
 
